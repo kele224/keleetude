@@ -3,151 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kele-Traduction | Maîtrisez l'Arabe</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Kele-Etude | Excellence Arabe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #27ae60; --dark: #2c3e50; --light: #f4f7f6; --accent: #3498db; }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--light); margin: 0; padding: 0; color: var(--dark); }
-        
-        /* Navigation */
-        nav { background: white; padding: 15px 20px; display: flex; justify-content: space-around; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        nav a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.9rem; }
-        nav a:hover { color: var(--primary); }
-
-        /* Hero Section */
-        header { text-align: center; padding: 50px 20px; background: linear-gradient(135deg, #2c3e50, #1a252f); color: white; }
-        header h1 { margin: 0; font-size: 2rem; }
-        header p { opacity: 0.8; font-weight: 300; max-width: 600px; margin: 10px auto; }
-
-        .container { max-width: 800px; margin: -40px auto 40px; padding: 0 15px; }
-
-        /* Outil de Traduction Intégré */
-        .translator-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 40px; }
-        .translator-box h3 { margin-top: 0; font-size: 1rem; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        
-        textarea { width: 100%; border: 1px solid #ddd; border-radius: 10px; padding: 12px; font-size: 1.2rem; font-family: 'Amiri', serif; direction: rtl; box-sizing: border-box; resize: none; }
-        
-        .signification-area { background: #f9f9f9; padding: 15px; border-radius: 10px; margin: 15px 0; min-height: 50px; border-left: 4px solid var(--primary); font-weight: 600; color: #555; }
-        
-        .btn-translate { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-translate:hover { background: #219150; transform: translateY(-2px); }
-
-        /* Grille de Cours */
-        .section-title { font-size: 1.2rem; margin-bottom: 20px; display: block; font-weight: 600; }
-        .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        .course-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; border-top: 4px solid var(--accent); }
-        .course-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        
-        .cat { font-size: 0.7rem; color: var(--accent); font-weight: 700; text-transform: uppercase; }
-        .ar-title { font-family: 'Amiri', serif; font-size: 1.6rem; display: block; margin: 10px 0; color: var(--dark); direction: rtl; }
-        .fr-title { font-weight: 600; font-size: 0.95rem; display: block; }
-        .desc { font-size: 0.8rem; color: #7f8c8d; margin: 10px 0; line-height: 1.4; }
-        
-        .btn-open { text-decoration: none; font-size: 0.85rem; color: var(--accent); font-weight: 600; }
-
-        @media (max-width: 600px) {
-            .course-grid { grid-template-columns: 1fr; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #0f172a; /* Fond sombre pour faire ressortir le dégradé */
+            min-height: 100vh;
+        }
+        .ar-font { 
+            font-family: 'Noto Sans Arabic', sans-serif; 
+            direction: rtl; 
+            line-height: 2;
+        }
+        /* Nouveau Dégradé Premium */
+        .bg-gradient-kele {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+        .arabic-block { 
+            border-right: 4px solid #818cf8; 
+            background: rgba(129, 140, 248, 0.1);
+        }
+        .loader-line {
+            height: 3px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        .loader-line-inner {
+            width: 40%;
+            height: 100%;
+            background: #f472b6;
+            animation: scan 1.5s infinite ease-in-out;
+        }
+        @keyframes scan {
+            0% { left: -40%; }
+            100% { left: 100%; }
         }
     </style>
 </head>
-<body>
+<body class="text-slate-200">
 
-<nav>
-    <a href="#">Étude</a>
-    <a href="#">Outils</a>
-    <a href="#">Connexion</a>
-</nav>
-
-<header>
-    <h1>Maîtrisez la Langue Arabe</h1>
-    <p>Toutes les règles de grammaire et de morphologie (Nahou & Sarf) basées sur le manuel de référence.</p>
-</header>
-
-<div class="container">
-    <!-- SECTION TRADUCTEUR -->
-    <div class="translator-box">
-        <h3>Texte du cours</h3>
-        <textarea id="inputArabe" placeholder="Copiez un mot arabe ici pour le traduire..." rows="2"></textarea>
+    <!-- NAVIGATION -->
+    <nav class="glass sticky top-0 z-50 border-b border-white/10 px-6 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-kele p-2 rounded-xl text-white shadow-lg shadow-indigo-500/20">
+                <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <span class="text-xl font-extrabold tracking-tight block text-white">Kele-<span class="text-indigo-400">Etude</span></span>
+                <span class="text-[9px] uppercase font-bold text-slate-400 tracking-[0.2em]">Apprentissage Intelligent</span>
+            </div>
+        </div>
         
-        <h3>Signification (Kele-Traducteur)</h3>
-        <div id="outputFrançais" class="signification-area">...</div>
-        
-        <button class="btn-translate" onclick="lancerTraduction()">Traduire</button>
+        <div class="flex items-center gap-4 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+            <button onclick="changePage(-1)" class="p-2 hover:bg-white/10 rounded-xl transition"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+            <div class="flex flex-col items-center px-2">
+                <span class="text-[9px] font-black text-slate-500 uppercase">Page</span>
+                <input type="number" id="pageNumber" value="15" onchange="loadLesson()" class="bg-transparent font-bold text-indigo-400 w-10 text-center outline-none text-lg">
+            </div>
+            <button onclick="changePage(1)" class="p-2 hover:bg-white/10 rounded-xl transition"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+        </div>
+    </nav>
+
+    <!-- LOADING BAR IA -->
+    <div id="loading-bar" class="hidden loader-line">
+        <div class="loader-line-inner"></div>
     </div>
 
-    <span class="section-title">Bases de la langue</span>
-    
-    <div class="course-grid">
-        <!-- Cours 1 -->
-        <div class="course-card">
-            <span class="cat">Bases</span>
-            <span class="ar-title">أَقْسَامُ الْكَلَامِ</span>
-            <span class="fr-title">Les parties du discours</span>
-            <p class="desc">Définition du Nom, du Verbe et de la Particule dans la grammaire.</p>
-            <a href="#" class="btn-open">Ouvrir le cours →</a>
-        </div>
-
-        <!-- Cours 2 -->
-        <div class="course-card" style="border-top-color: #e67e22;">
-            <span class="cat">Syntaxe</span>
-            <span class="ar-title">الْجُمْلَةُ الْعَرَبِيَّةُ</span>
-            <span class="fr-title">La phrase Arabe</span>
-            <p class="desc">Structure de la phrase nominale et verbale et ses composants.</p>
-            <a href="#" class="btn-open">Ouvrir le cours →</a>
-        </div>
-
-        <!-- Cours 3 -->
-        <div class="course-card" style="border-top-color: #9b59b6;">
-            <span class="cat">Le Nom</span>
-            <span class="ar-title">الْأَسْمَاءُ الْخَمْسَةُ</span>
-            <span class="fr-title">Les cinq noms spéciaux</span>
-            <p class="desc">Règles d'exception pour Ab, Akh, Ham, Fou, Dhou.</p>
-            <a href="#" class="btn-open">Ouvrir le cours →</a>
-        </div>
-
-        <!-- Cours 4 -->
-        <div class="course-card" style="border-top-color: #27ae60;">
-            <span class="cat">Morphologie</span>
-            <span class="ar-title">الْمُثَنَّى وَالْجَمْعُ</span>
-            <span class="fr-title">Duel et Pluriels</span>
-            <p class="desc">Comment transformer un mot au duel et au pluriel régulier.</p>
-            <a href="#" class="btn-open">Ouvrir le cours →</a>
-        </div>
-    </div>
-</div>
-
-<script>
-    async function lancerTraduction() {
-        const texte = document.getElementById('inputArabe').value;
-        const out = document.getElementById('outputFrançais');
+    <main class="max-w-4xl mx-auto p-6 space-y-10 mt-8">
         
-        if(!texte) return;
-        
-        out.innerText = "Recherche en cours...";
+        <!-- HEADER DE LA LEÇON -->
+        <header class="text-center space-y-4">
+            <h1 id="lesson-title" class="text-4xl md:text-5xl font-black text-white tracking-tight">Chargement du manuel...</h1>
+            <p class="text-slate-400 text-sm uppercase tracking-widest font-bold">Leçon par page automatique</p>
+        </header>
 
-        try {
-            const response = await fetch("https://soumah224-kele-traduction.hf.space/gradio_api/predict", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    // On envoie : [Texte, Source, Cible]
-                    data: [texte, "Arabe", "Français"]
-                })
-            });
+        <!-- BLOC ARABE (ORIGINAL PDF) -->
+        <section class="lesson-card rounded-[40px] p-8 md:p-12 shadow-2xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-6 opacity-20">
+                <i data-lucide="book-open" class="w-12 h-12 text-indigo-400"></i>
+            </div>
+            <div class="flex items-center gap-2 mb-8">
+                <span class="h-px w-8 bg-indigo-500"></span>
+                <h2 class="text-indigo-400 font-bold text-xs uppercase tracking-widest">Texte Original Arabe</h2>
+            </div>
+            <div id="ar-content" class="ar-font text-2xl md:text-4xl text-slate-100 whitespace-pre-wrap transition-all duration-500">
+                Analyse du document en cours...
+            </div>
+        </section>
 
-            const result = await response.json();
+        <!-- BLOC FRANÇAIS (TRADUCTION IA) -->
+        <section class="bg-gradient-kele rounded-[40px] p-8 md:p-12 shadow-2xl text-white relative shadow-indigo-500/20">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-yellow-300"></i>
+                    <h2 class="font-bold text-xs uppercase tracking-widest">Traduction & Explication Kele</h2>
+                </div>
+                <div class="flex items-center gap-2 bg-black/20 px-3 py-1 rounded-full border border-white/10">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-[10px] font-bold uppercase">IA Active</span>
+                </div>
+            </div>
             
-            if (result.data) {
-                out.innerText = result.data[0];
-            } else {
-                out.innerText = "Erreur de traduction";
-            }
-        } catch (e) {
-            out.innerText = "L'API Kele-Traduction est hors ligne";
-        }
-    }
-</script>
+            <div id="fr-content" class="text-white/90 leading-relaxed text-lg md:text-xl font-medium min-h-[100px] italic">
+                L'IA prépare l'explication en français...
+            </div>
 
+            <div class="mt-10 pt-6 border-t border-white/10 flex justify-between items-center">
+                <button onclick="speakText()" class="flex items-center gap-2 text-xs font-bold hover:text-yellow-300 transition">
+                    <i data-lucide="volume-2" class="w-4 h-4"></i> ÉCOUTER L'ARABE
+                </button>
+                <button onclick="copyLesson()" class="p-2 hover:bg-white/10 rounded-full transition"><i data-lucide="copy" class="w-4 h-4"></i></button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-12 text-slate-600 text-xs font-bold tracking-widest uppercase">
+        &copy; 2024 Kele-Etude | Intelligence Artificielle Éducative
+    </footer>
+
+    <script type="module">
+        import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+        
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        let lastText = "";
+
+        // FONCTION : CHARGER LA PAGE ET TRADUIRE
+        window.loadLesson = async () => {
+            const pageNum = parseInt(document.getElementById('pageNumber').value);
+            const arArea = document.getElementById('ar-content');
+            const frArea = document.getElementById('fr-content');
+            const titleArea = document.getElementById('lesson-title');
+            const loadingBar = document.getElementById('loading-bar');
+
+            loadingBar.classList.remove('hidden');
+            arArea.classList.add('opacity-30');
+            frArea.classList.add('opacity-30');
+
+            try {
+                // 1. Lire le PDF directement sur GitHub
+                const loadingTask = pdfjsLib.getDocument('manuel.pdf');
+                const pdf = await loadingTask.promise;
+                const page = await pdf.getPage(pageNum);
+                const textContent = await page.getTextContent();
+                
+                lastText = textContent.items.map(item => item.str).join(' ');
+                lastText = lastText.replace(/\s+/g, ' ').trim();
+
+                if (lastText.length < 5) {
+                    arArea.innerText = "Cette page ne contient pas de texte lisible (Image).";
+                    frArea.innerText = "-";
+                    titleArea.innerText = "Page " + pageNum;
+                } else {
+                    arArea.innerText = lastText;
+                    titleArea.innerText = "Leçon : Page " + pageNum;
+                    
+                    // 2. Traduction AUTO via ton API
+                    await translateAuto(lastText);
+                }
+            } catch (e) {
+                arArea.innerText = "Erreur : Assurez-vous que 'manuel.pdf' est bien dans votre dépôt GitHub.";
+            } finally {
+                loadingBar.classList.add('hidden');
+                arArea.classList.remove('opacity-30');
+                frArea.classList.remove('opacity-30');
+            }
+        };
+
+        async function translateAuto(text) {
+            const frArea = document.getElementById('fr-content');
+            try {
+                const app = await Client.connect("soumah224/mon-traducteur");
+                const result = await app.predict("/predict", [text, "Arabe", "Français"]);
+                frArea.innerHTML = result.data[0].replace(/\n/g, '<br>');
+            } catch (e) {
+                frArea.innerText = "L'IA de traduction est temporairement indisponible.";
+            }
+        }
+
+        // NAVIGATION
+        window.changePage = (offset) => {
+            const input = document.getElementById('pageNumber');
+            let n = parseInt(input.value) + offset;
+            if (n < 1) n = 1;
+            input.value = n;
+            loadLesson();
+        };
+
+        // LECTURE VOCALE
+        window.speakText = () => {
+            const msg = new SpeechSynthesisUtterance(lastText);
+            msg.lang = 'ar-SA';
+            window.speechSynthesis.speak(msg);
+        };
+
+        window.copyLesson = () => {
+            navigator.clipboard.writeText(document.getElementById('fr-content').innerText);
+            alert("Explication copiée !");
+        };
+
+        // INIT
+        window.onload = () => {
+            lucide.createIcons();
+            loadLesson();
+        };
+    </script>
 </body>
-</html>
+                    </html>
