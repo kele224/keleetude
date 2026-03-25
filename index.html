@@ -29,13 +29,16 @@
             border-radius: 20px;
             background: white;
         }
+        /* Style des cartes amélioré pour ressembler à l'image */
         .unit-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 4px solid #db2777;
-            transition: all 0.3s ease;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: transform 0.2s ease;
         }
         .unit-card:hover {
-            background: rgba(255, 255, 255, 0.06);
+            border-color: #db2777;
         }
         .loader-spin {
             border-top-color: #db2777;
@@ -46,7 +49,6 @@
 </head>
 <body class="pb-20">
 
-    <!-- NAVIGATION HEADER -->
     <nav class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-white/10 p-4">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-2">
@@ -56,7 +58,6 @@
                 <span class="font-extrabold text-xl tracking-tighter text-white">Kele-<span class="text-pink-500">Etude</span></span>
             </div>
             
-            <!-- Contrôles de Navigation -->
             <div class="flex items-center gap-4 bg-white/5 p-1 rounded-2xl border border-white/10">
                 <button onclick="changePage(-1)" class="p-2 hover:bg-white/10 rounded-xl transition text-pink-500">
                     <i data-lucide="chevron-left"></i>
@@ -74,7 +75,6 @@
 
     <main class="max-w-4xl mx-auto p-4 md:p-8 space-y-12">
         
-        <!-- PARTIE 1 : VISUEL DU PDF (LA RÉFÉRENCE) -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
@@ -87,25 +87,23 @@
             </div>
         </section>
 
-        <!-- SÉPARATEUR DESIGN -->
         <div class="flex items-center gap-4">
             <div class="h-px flex-1 bg-white/10"></div>
             <i data-lucide="sparkles" class="w-5 h-5 text-pink-500 opacity-50"></i>
             <div class="h-px flex-1 bg-white/10"></div>
         </div>
 
-        <!-- PARTIE 2 : ANALYSE ET TRADUCTION LECON PAR LECON -->
         <section class="space-y-6">
             <div class="text-center md:text-left">
                 <h2 class="text-2xl font-bold text-white">Analyse Interactive Kele-IA</h2>
-                <p class="text-slate-400 text-sm italic">Le texte est découpé par règle grammaticale pour faciliter la compréhension.</p>
+                <p class="text-slate-400 text-sm italic">Texte extrait et traduit phrase par phrase.</p>
             </div>
 
-            <div id="course-content" class="space-y-4">
-                <!-- Les blocs Arabe/Français seront générés ici -->
+            <!-- CONTENEUR DES PHRASES -->
+            <div id="course-content" class="space-y-6">
+                <!-- Les blocs seront générés ici -->
             </div>
         </section>
-
     </main>
 
     <script type="module">
@@ -116,26 +114,24 @@
         let pdfDoc = null;
         let pageNum = 1;
 
-        // 1. CHARGER LE DOCUMENT
         async function init() {
             try {
                 const loadingTask = pdfjsLib.getDocument('manuel.pdf');
                 pdfDoc = await loadingTask.promise;
                 renderAll();
             } catch (err) {
-                document.getElementById('course-content').innerHTML = "<p class='text-red-500'>Erreur : manuel.pdf introuvable sur votre GitHub.</p>";
+                document.getElementById('course-content').innerHTML = "<p class='text-red-500 text-center'>Erreur : manuel.pdf introuvable.</p>";
             }
         }
 
-        // 2. RENDRE LE VISUEL ET L'ANALYSE
         async function renderAll() {
             const container = document.getElementById('course-content');
             container.innerHTML = `<div class="flex flex-col items-center py-20 text-slate-500">
-                <div class="loader-spin w-10 h-10 border-4 rounded-full mb-4"></div>
-                Analyse contextuelle de la page...
+                <div class="loader-spin w-10 h-10 border-4 border-slate-700 rounded-full mb-4"></div>
+                Lecture et traduction en cours...
             </div>`;
 
-            // Rendu Visuel (Canvas)
+            // 1. Rendu PDF
             const page = await pdfDoc.getPage(pageNum);
             const canvas = document.getElementById('pdf-canvas');
             const ctx = canvas.getContext('2d');
@@ -144,52 +140,60 @@
             canvas.width = viewport.width;
             await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-            // Extraction du Texte
+            // 2. Extraction du Texte
             const textContent = await page.getTextContent();
-            let fullText = textContent.items.map(item => item.str).join(' ');
             
-            // Découpage intelligent par les points de grammaire (•) ou fins de phrases
-            let segments = fullText.split(/(?=•)|(?<=[.!?])\s+/g);
+            // On regroupe le texte et on le découpe par phrase (points, deux-points, ou puces)
+            let fullText = textContent.items.map(item => item.str).join(' ');
+            let segments = fullText.split(/(?<=[\.\!\?])\s+|(?=•)|(?<=:)\s+/g);
+            
             container.innerHTML = "";
 
-            for (let segment of segments) {
-                if (segment.trim().length < 5) continue;
+            segments.forEach((segment, index) => {
+                const textClean = segment.trim();
+                if (textClean.length < 3) return;
 
+                // Création de la structure de carte
                 const card = document.createElement('div');
-                card.className = "unit-card p-6 rounded-2xl space-y-4";
+                card.className = "unit-card space-y-4";
                 
-                const arText = document.createElement('div');
-                arText.className = "ar-font text-2xl text-white text-right";
-                arText.innerText = segment.trim();
+                // Texte Arabe (en haut)
+                const arBlock = document.createElement('div');
+                arBlock.className = "ar-font text-2xl text-white text-right leading-relaxed";
+                arBlock.innerText = textClean;
 
-                const frText = document.createElement('div');
-                frText.className = "text-slate-400 text-sm font-medium pl-4 border-l border-white/10 italic";
-                frText.innerText = "Traduction en cours...";
+                // Séparateur discret
+                const sep = document.createElement('div');
+                sep.className = "h-px w-10 bg-pink-500/30";
 
-                card.appendChild(arText);
-                card.appendChild(frText);
+                // Traduction Française (en bas)
+                const frBlock = document.createElement('div');
+                frBlock.className = "text-slate-400 text-sm font-medium italic transition-colors duration-500";
+                frBlock.innerHTML = `<span class="inline-block w-4 h-4 border-2 border-pink-500/20 border-t-pink-500 rounded-full animate-spin mr-2"></span> Traduction de l'IA...`;
+
+                card.appendChild(arBlock);
+                card.appendChild(sep);
+                card.appendChild(frBlock);
                 container.appendChild(card);
 
-                // Traduire chaque bloc avec l'API
-                requestTranslation(segment.trim(), frText);
-            }
+                // Lancer la traduction
+                requestTranslation(textClean, frBlock);
+            });
+
             lucide.createIcons();
         }
 
-        // 3. APPEL TRADUCTEUR IA
         async function requestTranslation(text, element) {
             try {
                 const app = await Client.connect("soumah224/mon-traducteur");
                 const result = await app.predict("/predict", [text, "Arabe", "Français"]);
                 element.innerText = result.data[0];
-                element.classList.remove('text-slate-400');
-                element.classList.add('text-pink-400');
+                element.classList.replace('text-slate-400', 'text-pink-400');
             } catch (e) {
-                element.innerText = "[Erreur IA : impossible de traduire ce segment]";
+                element.innerText = "[Erreur de traduction]";
             }
         }
 
-        // NAVIGATION
         window.changePage = (offset) => {
             let next = pageNum + offset;
             if (next >= 1 && next <= pdfDoc.numPages) {
@@ -205,4 +209,4 @@
         };
     </script>
 </body>
-            </html>
+    </html>
